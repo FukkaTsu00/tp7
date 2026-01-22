@@ -1,9 +1,10 @@
-import { View, Text, FlatList, Button, TextInput } from "react-native";
+import { View, Text, FlatList, Button, TextInput, Alert } from "react-native";
 import { useEffect, useState, useContext } from "react";
 import {
-loadTodos,
-addTodoOffline,
-updateTodoOffline,
+	loadTodos,
+	addTodoOffline,
+	updateTodoOffline,
+	deleteTodoOffline,
 } from "../services/database";
 import { ThemeContext } from "../context/ThemeContext";
 export default function TodoListOfflineScreen() {
@@ -59,7 +60,7 @@ return (
  Aucune tâche disponible hors ligne
  </Text>
  ) : (
- <FlatList
+	 <FlatList
  data={todos}
  keyExtractor={(item) => item.id.toString()}
  renderItem={({ item }) => (
@@ -71,13 +72,38 @@ return (
  }}
  >
  <Text>{item.title}</Text>
- <Button
- title="✏️"
- onPress={() => {
- setTitle(item.title);
- setEditingId(item.id);
- }}
- />
+		 <View style={{ flexDirection: 'row' }}>
+		  <Button
+			title="✏️"
+			onPress={() => {
+			 setTitle(item.title);
+			 setEditingId(item.id);
+			}}
+		  />
+		  <View style={{ width: 8 }} />
+		  <Button
+			title="🗑️"
+			color="#ff4444"
+			onPress={() => {
+			 Alert.alert(
+			  'Supprimer',
+			  'Supprimer cette tâche ?',
+			  [
+				{ text: 'Annuler', style: 'cancel' },
+				{
+				 text: 'Supprimer',
+				 style: 'destructive',
+				 onPress: () => {
+				  deleteTodoOffline(item.id);
+				  refreshTodos();
+				 },
+				},
+			  ],
+			  { cancelable: true }
+			 );
+			}}
+		  />
+		 </View>
  </View>
  )}
  />

@@ -20,6 +20,12 @@ db.runSync(
  [title, id]
 );
 };
+export const deleteTodoOffline = (id) => {
+ db.runSync(
+  "DELETE FROM todos WHERE id = ?",
+  [id]
+ );
+};
 export const loadTodos = () => {
 return db.getAllSync("SELECT * FROM todos");
 };
